@@ -2,12 +2,10 @@ package com.anonymous.tool.netconfclient;
 
 import java.net.URI;
 
-import org.apache.commons.configuration.ConfigurationException;
-
 import com.anonymous.tool.netconfclient.execption.LoginFailedException;
 import com.anonymous.tool.netconfclient.execption.RequestSendFailedException;
 
-import net.i2cat.netconf.NetconfSession;
+import net.i2cat.netconf.NetconfSessionEx;
 import net.i2cat.netconf.SessionContext;
 import net.i2cat.netconf.SessionContext.AuthType;
 import net.i2cat.netconf.errors.TransportException;
@@ -18,7 +16,7 @@ import net.i2cat.netconf.rpc.Reply;
 
 public class NetConfClient {
 	
-	private NetconfSession session;
+	private NetconfSessionEx session;
 	private SessionContext sessionContext;
 	
 	public void login(String ipAddress, String userName, String password) throws LoginFailedException {
@@ -36,7 +34,7 @@ public class NetConfClient {
 			uriBuffer.append(":22");
 			sessionContext.setURI(new URI(uriBuffer.toString()));
 	
-			session = new NetconfSession(sessionContext);
+			session = new NetconfSessionEx(sessionContext);
 			session.connect();
 		} catch (Exception e) {
 			throw new LoginFailedException(e.getMessage());

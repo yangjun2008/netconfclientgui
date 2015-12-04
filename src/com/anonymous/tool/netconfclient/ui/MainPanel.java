@@ -25,6 +25,7 @@ import com.anonymous.tool.netconfclient.NetConfClient;
 import com.anonymous.tool.netconfclient.execption.LoginFailedException;
 import com.anonymous.tool.netconfclient.execption.RequestSendFailedException;
 
+@SuppressWarnings("serial")
 public class MainPanel extends JPanel {
 	
 	private TitledBorder loginPanelBorder;
