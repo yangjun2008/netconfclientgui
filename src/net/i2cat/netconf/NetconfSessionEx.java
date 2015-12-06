@@ -46,7 +46,8 @@ public class NetconfSessionEx extends NetconfSession {
 			throw new TransportException("Error getting reply to request: " + e.getMessage(), e);
 		}
 		logEx.debug("--------------------------------------------------");
-		logEx.debug("receiving REPLY ");
+		logEx.debug("receiving REPLY + " + reply);
+		
 		logEx.debug(reply.getContain());
 		logEx.debug("--------------------------------------------------");
 

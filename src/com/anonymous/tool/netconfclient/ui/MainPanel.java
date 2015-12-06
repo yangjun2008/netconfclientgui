@@ -32,6 +32,7 @@ public class MainPanel extends JPanel {
 	private JTextField serverInputField;
 	private JTextField userInputField;
 	private JPasswordField passwordInputField;
+	private JTextField portInputField;
 	private JButton loginButton;
 	private JButton sendButton;
 	private JTextArea requestArea;
@@ -77,16 +78,19 @@ public class MainPanel extends JPanel {
 
 		container.setBorder(loginPanelBorder);
 		
-		JLabel serverInputLabel = new JLabel("Server IpAddress: ");
+		JLabel serverInputLabel = new JLabel("Server IP: ");
 		JLabel userInputLabel = new JLabel("User Name: ");
 		JLabel passwordLabel = new JLabel("Password: ");
+		JLabel portLabel = new JLabel("Port: ");
 		
 		serverInputField = new JTextField();		
 		userInputField = new JTextField();		
 		passwordInputField = new JPasswordField();
+		portInputField = new JTextField();
 		serverInputField.setPreferredSize(new Dimension(120, 24));
 		userInputField.setPreferredSize(new Dimension(120, 24));
 		passwordInputField.setPreferredSize(new Dimension(120, 24));
+		portInputField.setPreferredSize(new Dimension(60, 24));
 		
 		loginButton = new JButton("Login");
 		loginButton.addMouseListener(new MouseAdapter() {
@@ -96,7 +100,7 @@ public class MainPanel extends JPanel {
 			}
 			
 		});
-		loginButton.setPreferredSize(new Dimension(80, 24));
+		loginButton.setPreferredSize(new Dimension(100, 24));
 		
 		GridBagLayout loginPanelLayout = new GridBagLayout(); 
 		container.setLayout(loginPanelLayout);
@@ -108,6 +112,10 @@ public class MainPanel extends JPanel {
 		
 		container.add(passwordLabel);
 		container.add(passwordInputField);
+		
+		container.add(portLabel);
+		container.add(portInputField);
+		
 		container.add(loginButton);
 		GridBagConstraints loginPanelLayoutConstraints = new GridBagConstraints(); 
 		loginPanelLayoutConstraints.fill = GridBagConstraints.HORIZONTAL; 
@@ -115,7 +123,7 @@ public class MainPanel extends JPanel {
 		loginPanelLayoutConstraints.gridwidth=1; 
 		loginPanelLayoutConstraints.weightx = 0; 
 		loginPanelLayoutConstraints.weighty=0; 
-		loginPanelLayoutConstraints.insets = new Insets(5,5,10,10);
+		loginPanelLayoutConstraints.insets = new Insets(5,5,5,5);
 		loginPanelLayout.setConstraints(serverInputLabel, loginPanelLayoutConstraints); 
 		loginPanelLayout.setConstraints(userInputLabel, loginPanelLayoutConstraints); 
 		loginPanelLayout.setConstraints(passwordLabel, loginPanelLayoutConstraints); 
@@ -126,6 +134,8 @@ public class MainPanel extends JPanel {
 		loginPanelLayout.setConstraints(serverInputField, loginPanelLayoutConstraints); 
 		loginPanelLayout.setConstraints(userInputField, loginPanelLayoutConstraints); 
 		loginPanelLayout.setConstraints(passwordInputField, loginPanelLayoutConstraints); 
+		loginPanelLayoutConstraints.weightx = 0.5; 
+		loginPanelLayout.setConstraints(portInputField, loginPanelLayoutConstraints); 
 	}
 	
 	private void initRequestPanelUI(JPanel parent) {
@@ -180,7 +190,8 @@ public class MainPanel extends JPanel {
 	private void loginButtonActionPerformed(boolean isLogin) {
 		try {
 			if(isLogin) {
-				client.login(serverInputField.getText().trim(),userInputField.getText().trim(), String.valueOf(passwordInputField.getPassword()));
+				client.login(serverInputField.getText().trim(),userInputField.getText().trim(), String.valueOf(passwordInputField.getPassword()),
+						portInputField.getText());
 				loginButton.setText("Logout");
 				serverInputField.setEnabled(false);
 				userInputField.setEnabled(false);
@@ -205,10 +216,8 @@ public class MainPanel extends JPanel {
 	
 	private void sendButtonActionPerformed() {
 		try {
-			requestArea.setText("");
-			responseArea.setText("");
-			this.updateUI();
 			String result = client.send(requestArea.getText().trim());
+			requestArea.setText("");
 			responseArea.setText(result);
 			this.updateUI();
 		} catch (RequestSendFailedException ex) {

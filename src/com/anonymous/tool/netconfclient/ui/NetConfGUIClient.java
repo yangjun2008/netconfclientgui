@@ -1,6 +1,7 @@
 package com.anonymous.tool.netconfclient.ui;
 
 import java.awt.EventQueue;
+import java.util.Locale;
 
 import javax.swing.JFrame;
 
@@ -12,6 +13,7 @@ public class NetConfGUIClient {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Locale.setDefault(new Locale("en", "US"));  
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {

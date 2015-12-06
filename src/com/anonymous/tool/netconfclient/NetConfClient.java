@@ -19,7 +19,7 @@ public class NetConfClient {
 	private NetconfSessionEx session;
 	private SessionContext sessionContext;
 	
-	public void login(String ipAddress, String userName, String password) throws LoginFailedException {
+	public void login(String ipAddress, String userName, String password, String port) throws LoginFailedException {
 		try {
 			sessionContext = new SessionContext();
 			sessionContext.setAuthenticationType(AuthType.PASSWORD);
@@ -31,7 +31,8 @@ public class NetConfClient {
 			uriBuffer.append(password);
 			uriBuffer.append("@");
 			uriBuffer.append(ipAddress);
-			uriBuffer.append(":22");
+			uriBuffer.append(":");
+			uriBuffer.append(port);
 			sessionContext.setURI(new URI(uriBuffer.toString()));
 	
 			session = new NetconfSessionEx(sessionContext);
@@ -47,13 +48,12 @@ public class NetConfClient {
 		session = null;
 	}
 
-	public String send(String request) throws RequestSendFailedException {
-		Query query = new Query();
-		query.setOperation(Operation.GET_CONFIG);
-		query.setSource(request);
-		
+	public String send(String request) throws RequestSendFailedException {	
 		try {
-			Reply reply = session.sendSyncQuery(query);
+			Reply reply = session.sendSyncRequest(request);
+			if(reply == null) {
+				return "";
+			}
 			/* check first messages */
 			if (reply.containsErrors()) {
 				String msg = sortErrors(reply);
