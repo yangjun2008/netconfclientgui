@@ -1,5 +1,8 @@
 package net.i2cat.netconf;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +31,10 @@ public class NetconfSessionEx extends NetconfSession {
 	public Reply sendSyncRequest(final String request) throws TransportException {
 
 		logEx.info("Sending request (" + request + ")");
-
+		String msgId = getMessageId(request);
+		if(msgId == null) {
+			throw new TransportException("Error getting message-id from request: "+ request);
+		}
 		transport.sendAsyncQuery(new RPCElement() {
 			public String toXML() {
 				return request;
@@ -38,9 +44,7 @@ public class NetconfSessionEx extends NetconfSession {
 		logEx.info("Sent. Waiting for response...");
 		Reply reply = null;
 		try {
-			if (sessionContext.containsKey(SessionContext.TIMEOUT)) {
-				reply = (Reply) messageQueue.blockingConsume();
-			}
+			reply = (Reply) messageQueue.blockingConsumeById(msgId, 10000);
 		} 
 		catch (Exception e) {
 			throw new TransportException("Error getting reply to request: " + e.getMessage(), e);
@@ -55,5 +59,22 @@ public class NetconfSessionEx extends NetconfSession {
 
 		return reply;
 	}
+	
+	private static final Pattern rpcMessageIdPattern = Pattern.compile("message-id=\".*\"");	
+	private static final Pattern numberPattern = Pattern.compile("(\\d+)");  
+
+	private String getMessageId(String content) {
+		 Matcher msgIdMatcher;
+		 Matcher msgIdNumberMatcher;
+		 msgIdMatcher = rpcMessageIdPattern.matcher(content);
+		 if(msgIdMatcher.find()) {
+			 msgIdNumberMatcher = numberPattern.matcher(msgIdMatcher.group());
+			 if(msgIdNumberMatcher.find()) {
+				 return msgIdNumberMatcher.group();
+			 }
+		 }
+		 return null;
+	}
+	
 
 }

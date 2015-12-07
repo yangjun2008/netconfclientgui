@@ -45,7 +45,7 @@ public class NetConfClient {
 		session.disconnect();
 		session = null;
 	}
-
+	
 	public String send(String request) throws RequestSendFailedException {	
 		try {
 			Reply reply = session.sendSyncRequest(request);
@@ -63,6 +63,7 @@ public class NetConfClient {
 		}
 		
 	}
+	
 	
 	private String sortErrors(Reply reply) {
 		String msg = "";
