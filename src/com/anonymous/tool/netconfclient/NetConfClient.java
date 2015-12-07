@@ -10,8 +10,6 @@ import net.i2cat.netconf.SessionContext;
 import net.i2cat.netconf.SessionContext.AuthType;
 import net.i2cat.netconf.errors.TransportException;
 import net.i2cat.netconf.rpc.Error;
-import net.i2cat.netconf.rpc.Operation;
-import net.i2cat.netconf.rpc.Query;
 import net.i2cat.netconf.rpc.Reply;
 
 public class NetConfClient {
